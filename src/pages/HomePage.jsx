@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import { t } from '../i18n/strings'
 
-const DEFAULT_EVENT = 'evt_alpha_2026'
+const DEFAULT_EVENT = 'innovare-territori'
 
 /**
  * Developer/operator landing page. Real attendees arrive via a QR deep-link
@@ -19,6 +19,8 @@ export default function HomePage() {
     { to: `/join/${id}`, emoji: '📲', ...t.home.routes.join },
     { to: `/event/${id}/admin`, emoji: '🛡️', ...t.home.routes.admin },
     { to: `/event/${id}/wall`, emoji: '🖥️', ...t.home.routes.wall },
+    { to: `/event/${id}/feed`, emoji: '📱', ...t.home.routes.feed },
+    { to: `/event/${id}/print`, emoji: '🖨️', ...t.home.routes.print },
   ]
 
   return (
@@ -29,7 +31,7 @@ export default function HomePage() {
           'radial-gradient(120% 80% at 50% 0%, #142a63 0%, var(--color-ink-950) 60%)',
       }}
     >
-      <div className="w-full max-w-3xl text-center">
+      <div className="w-full max-w-5xl text-center">
         <h1 className="text-5xl font-extrabold tracking-tight text-white">
           LiveWall
         </h1>
@@ -46,7 +48,7 @@ export default function HomePage() {
           />
         </label>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
           {routes.map((r) => (
             <button
               key={r.to}

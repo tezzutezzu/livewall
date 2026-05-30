@@ -10,6 +10,52 @@ import { t } from '../i18n/strings'
 export default function WallCard({ post, entering = true }) {
   const initial = (post.userName || '?').trim().charAt(0).toUpperCase()
 
+  const renderParsedText = (text) => {
+    if (!text) return null
+    // Matches URLs starting with http(s), URLs starting with www., and hashtags
+    const regex = /(https?:\/\/[^\s]+|www\.[^\s]+|#\w+)/g
+    const parts = text.split(regex)
+
+    return parts.map((part, i) => {
+      if (!part) return null
+
+      if (part.startsWith('#')) {
+        return (
+          <span
+            key={i}
+            className="inline-block font-bold px-1.5 py-0.5 rounded-lg mx-0.5 transition-transform duration-200 hover:scale-105 select-all"
+            style={{
+              color: 'var(--event-secondary)',
+              background: 'color-mix(in srgb, var(--event-secondary) 15%, transparent)',
+              border: '1px solid color-mix(in srgb, var(--event-secondary) 25%, transparent)',
+            }}
+          >
+            {part}
+          </span>
+        )
+      }
+
+      const isUrl = part.startsWith('http://') || part.startsWith('https://') || part.startsWith('www.')
+      if (isUrl) {
+        const href = part.startsWith('www.') ? `https://${part}` : part
+        return (
+          <a
+            key={i}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold underline decoration-2 underline-offset-4 break-all transition-opacity hover:opacity-80"
+            style={{ color: 'var(--event-secondary)' }}
+          >
+            {part}
+          </a>
+        )
+      }
+
+      return part
+    })
+  }
+
   return (
     <article
       className={`flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-md ${
@@ -35,7 +81,7 @@ export default function WallCard({ post, entering = true }) {
       <div className="flex flex-1 flex-col gap-4 p-6">
         {post.text ? (
           <p className="text-2xl font-medium leading-snug text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
-            {post.text}
+            {renderParsedText(post.text)}
           </p>
         ) : null}
 

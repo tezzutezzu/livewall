@@ -105,6 +105,12 @@ export function setPostHidden(eventId, id, hidden) {
   return update(ref(db, postPath(eventId, APPROVED, id)), { hidden })
 }
 
+/** Update a post's message text in the database. */
+export function updatePostText(eventId, id, text) {
+  if (!db) throw new Error('Database is not configured.')
+  return update(ref(db, postPath(eventId, APPROVED, id)), { text })
+}
+
 /**
  * Permanently delete a post and best-effort remove its Storage image. Failing
  * to delete the image (e.g. already gone) does not block the record deletion.

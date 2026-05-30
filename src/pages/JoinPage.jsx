@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { ensureAnonAuth, isFirebaseConfigured } from '../firebase/config'
 import { uploadPendingImage } from '../firebase/storage'
 import { submitPost } from '../firebase/posts'
@@ -21,6 +21,7 @@ const STAGES = {
 
 export default function JoinPage() {
   const { eventId } = useParams()
+  const navigate = useNavigate()
   const { settings } = useEventSettings(eventId)
   const online = useOnlineStatus()
 
@@ -139,6 +140,20 @@ export default function JoinPage() {
 
   return (
     <Shell>
+      {/* Top quick links */}
+      <div className="mb-6 flex justify-between items-center select-none">
+        <span className="text-xs tracking-widest text-white/30 uppercase font-mono">
+          Event ID: {eventId}
+        </span>
+        <button
+          type="button"
+          onClick={() => navigate(`/event/${eventId}/feed`)}
+          className="rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/60 backdrop-blur transition duration-200 hover:bg-white/10 hover:text-white hover:scale-105 cursor-pointer outline-none"
+        >
+          📱 Feed Live
+        </button>
+      </div>
+
       {/* Offline banner */}
       {!online ? (
         <div className="mb-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
@@ -225,9 +240,14 @@ export default function JoinPage() {
         onClose={() => setDone(false)}
         title={t.join.successTitle}
         actions={
-          <Button variant="primary" onClick={() => setDone(false)}>
-            {t.join.postAnother}
-          </Button>
+          <>
+            <Button variant="ghost" onClick={() => navigate(`/event/${eventId}/feed`)}>
+              📱 Feed Live
+            </Button>
+            <Button variant="primary" onClick={() => setDone(false)}>
+              {t.join.postAnother}
+            </Button>
+          </>
         }
       >
         {t.join.successDirect}

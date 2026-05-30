@@ -14,13 +14,65 @@ export default function WallPage() {
   const { visible, idle, totalApproved } = useWallController(eventId)
 
   // Manual operator override for the fallback layer:
-  //   null  → automatic (driven by the idle/lull heartbeat)
   //   true  → force the promo/QR slides on
-  //   false → force the live feed on
-  const [override, setOverride] = useState(null)
-  const showFallback = override ?? idle
+  //   false → force the live feed on (default)
+  const [override, setOverride] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  const showFallback = isMobile ? false : override
 
   const eventName = settings.eventName
+
+  const [currentTime, setCurrentTime] = useState(new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  // Keyboard shortcuts for venue operators:
+  //   'F' -> toggles full screen projection mode
+  //   'Q' -> toggles/forces showing the QR code fallback layer
+  useEffect(() => {
+    const handleKeyDown = async (e) => {
+      if (
+        document.activeElement?.tagName === 'INPUT' ||
+        document.activeElement?.tagName === 'TEXTAREA' ||
+        document.activeElement?.isContentEditable
+      ) {
+        return
+      }
+
+      const key = e.key.toLowerCase()
+      if (key === 'f') {
+        e.preventDefault()
+        try {
+          if (document.fullscreenElement) {
+            await document.exitFullscreen()
+          } else {
+            await document.documentElement.requestFullscreen()
+          }
+        } catch {
+          /* ignore fullscreen blocker errors */
+        }
+      } else if (key === 'q') {
+        e.preventDefault()
+        setOverride((prev) => !prev)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   if (!isFirebaseConfigured) {
     return (
@@ -46,6 +98,14 @@ export default function WallPage() {
             'radial-gradient(40% 40% at 30% 30%, var(--event-secondary) 0%, transparent 70%), radial-gradient(40% 40% at 70% 70%, var(--event-primary) 0%, transparent 70%)',
         }}
       />
+      {/* Top-right clock indicator */}
+      <div className="absolute top-6 right-6 z-20 flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-4 py-2 backdrop-blur select-none">
+        <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+        <span className="font-mono text-sm font-semibold tracking-wide text-white/90">
+          {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+        </span>
+      </div>
+
 
       <div className="absolute bottom-6 right-6 z-20 flex items-center gap-3">
         <FallbackToggle

@@ -54,8 +54,8 @@ export function useWallController(eventId) {
         }
         seenRef.current = new Set(posts.map((p) => p.id))
 
-        // Show the newest cards, capped for the DOM (posts arrive oldest-first).
-        setVisible(posts.slice(-MAX_VISIBLE))
+        // Show the newest cards first, capped for the DOM (posts arrive oldest-first).
+        setVisible(posts.slice(-MAX_VISIBLE).reverse())
       },
       FETCH_LIMIT,
     )

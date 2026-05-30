@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { isFirebaseConfigured } from '../firebase/config'
-import { setPostHidden, deletePost } from '../firebase/posts'
+import { setPostHidden, deletePost, updatePostText } from '../firebase/posts'
 import { useAllPosts } from '../hooks/usePosts'
 import { useEventSettings } from '../hooks/useEventSettings'
 import AdminGate from '../components/AdminGate'
@@ -33,6 +33,18 @@ export default function AdminPage() {
     } catch (err) {
       console.error(err)
       setError(t.admin.hideError)
+    } finally {
+      setActing((a) => ({ ...a, [post.id]: undefined }))
+    }
+  }
+
+  async function updateText(post, newText) {
+    setActing((a) => ({ ...a, [post.id]: 'edit' }))
+    try {
+      await updatePostText(eventId, post.id, newText)
+    } catch (err) {
+      console.error(err)
+      setError(t.admin.editError)
     } finally {
       setActing((a) => ({ ...a, [post.id]: undefined }))
     }
@@ -105,6 +117,7 @@ export default function AdminPage() {
                   busy={acting[post.id]}
                   onToggleHidden={() => toggleHidden(post)}
                   onDelete={() => setDeleting(post)}
+                  onSaveText={(newText) => updateText(post, newText)}
                 />
               ))}
             </div>
@@ -147,7 +160,17 @@ export default function AdminPage() {
   )
 }
 
-function MessageCard({ post, busy, onToggleHidden, onDelete }) {
+function MessageCard({ post, busy, onToggleHidden, onDelete, onSaveText }) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editText, setEditText] = useState(post.text || '')
+  const isSaving = busy === 'edit'
+
+  useEffect(() => {
+    if (!isEditing) {
+      setEditText(post.text || '')
+    }
+  }, [post.text, isEditing])
+
   return (
     <article
       className={`flex flex-col overflow-hidden rounded-2xl border shadow-xl transition ${
@@ -180,9 +203,61 @@ function MessageCard({ post, busy, onToggleHidden, onDelete }) {
           <span className="font-semibold text-white">
             {post.userName || t.common.guest}
           </span>
-          <span className="text-white/40">{formatTime(post.timestamp)}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-white/40">{formatTime(post.timestamp)}</span>
+            {!isEditing && (
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                title={t.admin.edit}
+                className="text-white/40 hover:text-white transition duration-200 cursor-pointer text-xs px-1.5 py-0.5 rounded border border-white/5 bg-white/5 hover:bg-white/10"
+              >
+                ✏️ {t.admin.edit}
+              </button>
+            )}
+          </div>
         </div>
-        {post.text ? (
+        {isEditing ? (
+          <div className="flex flex-col gap-2">
+            <textarea
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+              disabled={isSaving}
+              className="w-full resize-none rounded-xl border border-white/10 bg-ink-900 px-3 py-2 text-sm text-white placeholder-white/20 outline-none transition focus:border-white/30 focus:bg-ink-950"
+              rows={3}
+              maxLength={300}
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false)
+                  setEditText(post.text || '')
+                }}
+                disabled={isSaving}
+                className="rounded-lg px-3 py-1.5 text-xs font-medium text-white/50 transition hover:bg-white/5 hover:text-white cursor-pointer"
+              >
+                {t.admin.cancel}
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  const trimmed = editText.trim()
+                  if (trimmed === post.text) {
+                    setIsEditing(false)
+                    return
+                  }
+                  await onSaveText(trimmed)
+                  setIsEditing(false)
+                }}
+                disabled={isSaving || !editText.trim()}
+                className="flex items-center justify-center min-w-[60px] rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 cursor-pointer"
+              >
+                {isSaving ? <Spinner /> : t.admin.save}
+              </button>
+            </div>
+          </div>
+        ) : post.text ? (
           <p className="text-white/85">{post.text}</p>
         ) : (
           <p className="italic text-white/40">{t.admin.noMessage}</p>

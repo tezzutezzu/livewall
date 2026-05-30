@@ -41,6 +41,14 @@ export const t = {
         title: 'Muro Live',
         desc: 'Il feed proiettato a schermo intero per la sede.',
       },
+      feed: {
+        title: 'Feed Mobile',
+        desc: 'Il feed social in tempo reale per i telefoni dei partecipanti.',
+      },
+      print: {
+        title: 'Stampa Report',
+        desc: 'Layout ad alto contrasto ottimizzato per stampare tutti i post dell’evento.',
+      },
     },
   },
 
@@ -88,9 +96,12 @@ export const t = {
       'L’azione è definitiva: il messaggio e la sua immagine verranno rimossi.',
     confirmDelete: 'Elimina definitivamente',
     cancel: 'Annulla',
+    save: 'Salva',
+    edit: 'Modifica',
     actionFailedTitle: 'Azione non riuscita',
     hideError: 'Impossibile aggiornare il messaggio. Riprova.',
     deleteError: 'Impossibile eliminare il messaggio. Riprova.',
+    editError: 'Impossibile modificare il messaggio. Riprova.',
   },
 
   adminGate: {
