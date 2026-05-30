@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens & theme for the LiveWall system.
+ * Tailwind v4 reads the @theme block to generate utility classes
+ * (e.g. `bg-ink-900`, `text-brand`, `animate-fade-in-up`).
+ */
+@theme {
+  /* Deep ambient projection palette */
+  --color-ink-950: #05060a;
+  --color-ink-900: #0a0b12;
+  --color-ink-800: #11131d;
+  --color-ink-700: #1a1d2b;
+  --color-ink-600: #262a3d;
+
+  /* Brand accents (overridable per-event at runtime via CSS vars) */
+  --color-brand: #3b82f6;
+  --color-brand-deep: #1e3a8a;
+
+  --font-display: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  /* Keyframe-driven animations used by the Live Wall */
+  --animate-fade-in-up: fade-in-up 0.7s ease-in-out both;
+  --animate-fade-out: fade-out 0.7s ease-in-out both;
+  --animate-pop-in: pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-slow-pan: slow-pan 28s ease-in-out infinite alternate;
+  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slow-pan {
+  from {
+    transform: scale(1.08) translate(-1%, -1%);
+  }
+  to {
+    transform: scale(1.16) translate(1%, 1%);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+:root {
+  /* Runtime-themable accent — overwritten by the active event's settings.
+     Defaults mirror the blueprint's primary/secondary colors. */
+  --event-primary: #1e3a8a;
+  --event-secondary: #3b82f6;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100svh;
+  width: 100%;
+  background: var(--color-ink-950);
+  color: #e6e8f0;
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide scrollbars on the projected wall while keeping scroll behavior */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
