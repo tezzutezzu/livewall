@@ -88,14 +88,14 @@ export default function PrintPage() {
           <div>
             {/* Printable Header */}
             <div className="hidden print:block border-b-2 border-slate-900 pb-4 mb-8 select-none">
-              <h1 className="text-3xl font-extrabold tracking-tight text-slate-950">
+                  {/* <h1 className="text-3xl font-extrabold tracking-tight text-slate-950">
                 LiveWall - Report Post
               </h1>
               <div className="flex items-center justify-between text-xs text-slate-500 mt-2">
                 <span>ID Evento: <strong className="text-slate-800">{eventId}</strong></span>
                 <span>Totale Post Approvati: <strong className="text-slate-800">{posts.length}</strong></span>
                 <span>Data Stampa: {new Date().toLocaleString()}</span>
-              </div>
+              </div> */}
             </div>
 
             {/* Clean Print Grid */}
@@ -120,14 +120,15 @@ export default function PrintPage() {
 
                   <div className="flex-grow flex flex-col">
                     <p className="text-sm font-medium text-slate-800 leading-relaxed break-words flex-grow">
-                      {post.text || <span className="italic text-slate-400">Nessun messaggio scritto.</span>}
+                      {post.text || ""}
                     </p>
 
                     <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                      <span className="font-bold text-slate-700">
+                      {/* Temporarily hidden author per user request */}
+                      {/* <span className="font-bold text-slate-700">
                         👤 {post.userName || t.common.guest}
-                      </span>
-                      <span>
+                      </span> */}
+                      <span className="ml-auto">
                         ⏰ {formatPrintTime(post.timestamp)}
                       </span>
                     </div>

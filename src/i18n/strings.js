@@ -49,6 +49,10 @@ export const t = {
         title: 'Stampa Report',
         desc: 'Layout ad alto contrasto ottimizzato per stampare tutti i post dell’evento.',
       },
+      json: {
+        title: 'Mappa Relazioni',
+        desc: 'Grafico interattivo D3 che collega in rete i post aventi hashtag in comune.',
+      },
     },
   },
 
@@ -105,11 +109,13 @@ export const t = {
   },
 
   adminGate: {
-    title: 'Accesso moderazione',
-    subtitle: 'Inserisci il codice di accesso dello staff per continuare.',
-    placeholder: 'Codice di accesso',
-    incorrect: 'Codice di accesso errato.',
-    unlock: 'Sblocca il pannello',
+    title: 'Area Riservata Amministratore',
+    subtitle: 'L\'accesso a questa pagina è limitato esclusivamente all\'operatore autorizzato. Accedi con il tuo account Google.',
+    loginWithGoogle: 'Accedi con Google',
+    deniedTitle: 'Accesso Non Autorizzato',
+    deniedSubtitle: (email) => `L'account ${email} non dispone dei privilegi di amministrazione. Solo danilo@tezzutezzu.com può accedere.`,
+    signOut: 'Usa un altro account',
+    loading: 'Verifica autorizzazione in corso...',
   },
 
   wall: {

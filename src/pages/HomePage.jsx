@@ -21,6 +21,7 @@ export default function HomePage() {
     { to: `/event/${id}/wall`, emoji: '🖥️', ...t.home.routes.wall },
     { to: `/event/${id}/feed`, emoji: '📱', ...t.home.routes.feed },
     { to: `/event/${id}/print`, emoji: '🖨️', ...t.home.routes.print },
+    { to: `/event/${id}/json`, emoji: '🕸️', ...t.home.routes.json },
   ]
 
   return (
@@ -31,7 +32,7 @@ export default function HomePage() {
           'radial-gradient(120% 80% at 50% 0%, #142a63 0%, var(--color-ink-950) 60%)',
       }}
     >
-      <div className="w-full max-w-5xl text-center">
+      <div className="w-full max-w-6xl text-center">
         <h1 className="text-5xl font-extrabold tracking-tight text-white">
           LiveWall
         </h1>
@@ -48,7 +49,7 @@ export default function HomePage() {
           />
         </label>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6">
           {routes.map((r) => (
             <button
               key={r.to}

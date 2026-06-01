@@ -80,22 +80,28 @@ export default function WallCard({ post, entering = true }) {
 
       <div className="flex flex-1 flex-col gap-4 p-6">
         {post.text ? (
-          <p className="text-2xl font-medium leading-snug text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
+          <p 
+            className="font-medium leading-snug text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+            style={{ fontSize: '1.65rem' }}
+          >
             {renderParsedText(post.text)}
           </p>
         ) : null}
 
+        {/* Temporarily hidden author block per user request */}
+        {/*
         <div className="mt-auto flex items-center gap-3 pt-2">
           <span
-            className="flex h-10 w-10 items-center justify-center rounded-full text-base font-bold text-white shadow-lg"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-lg font-bold text-white shadow-lg"
             style={{ background: 'var(--event-secondary)' }}
           >
             {initial}
           </span>
-          <span className="text-lg font-semibold text-white/90">
+          <span className="text-xl font-semibold text-white/90">
             {post.userName || t.common.guest}
           </span>
         </div>
+        */}
       </div>
     </article>
   )
